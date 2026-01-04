@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sydney Rent Map - SIMPLE</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 20px; font-family: Arial; }
+        #map { 
+            height: 600px; 
+            width: 100%;
+            border: 3px solid #007bff;
+            border-radius: 10px;
+        }
+        h1 { color: #333; text-align: center; }
+        .info { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏠 Simple Sydney Rent Map</h1>
+    
+    <div class="info" id="status">
+        Loading map...
+    </div>
+    
+    <div id="map"></div>
+    
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="data.js"></script>
+    
+    <script>
+        console.log('=== SIMPLE MAP STARTING ===');
+        
+        // Check data loaded
+        if (!window.sydneySuburbs) {
+            document.getElementById('status').innerHTML = 
+                '<span style="color:red">❌ ERROR: Data not loaded</span>';
+            throw new Error('Data not loaded');
+        }
+        
+        console.log('✅ Data loaded:', sydneySuburbs.length, 'suburbs');
+        
+        // Create map
+        const map = L.map('map').setView([-33.8688, 151.2093], 11);
+        
+        // Add map background
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        
+        // Add SIMPLE markers
+        sydneySuburbs.forEach(suburb => {
+            L.marker([suburb.lat, suburb.lng])
+                .addTo(map)
+                .bindPopup(`<b>${suburb.name}</b>`);
+        });
+        
+        // Update status
+        document.getElementById('status').innerHTML = 
+            `<span style="color:green">✅ Map loaded with ${sydneySuburbs.length} suburbs</span>`;
+        
+        console.log('✅ Simple map created successfully');
+    </script>
+</body>
+</html>
